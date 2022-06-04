@@ -1,0 +1,27 @@
+{
+  "name": "file-picker-test",
+  "version": "1.0.0",
+  "description": "Test of file picker and image uploads",
+  "main": "./server/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "cd server && npm i && cd ../client && npm i"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chip-L/file-picker-test.git"
+  },
+  "keywords": [
+    "expo",
+    "react-native",
+    "typescript",
+    "express",
+    "multer"
+  ],
+  "author": "Chip Long",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Chip-L/file-picker-test/issues"
+  },
+  "homepage": "https://github.com/Chip-L/file-picker-test#readme"
+}
