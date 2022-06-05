@@ -7,7 +7,7 @@ interface UploadImageProps {
 }
 
 const HOST = "https://file-picker-test.herokuapp.com";
-const URL = HOST + "/api/add-image-no-mw";
+const URL = HOST + "/api/add-image-by-fields";
 
 const fetchImageFromUri = async (uri: string) => {
   console.log("***** Fetch Image From Uri *****");
@@ -57,9 +57,9 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
       try {
         console.log("***** Fetch section *****");
         res = await fetch(URL, options);
+        console.log("res.ok:", res.ok);
         const body = (await res.json()) as any;
 
-        console.log("res.ok:", res.ok);
         if (!res.ok) {
           throw new Error("Something went wrong");
         }
@@ -67,8 +67,10 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
         console.log("***** Success section *****");
         if (body.code > 200) {
           console.log("setErrMsg", body.msg);
+          setErrMessage(body.msg);
         } else {
           console.log("setStatusMsg", body.msg);
+          setMessage(body.msg);
         }
       } catch (err) {
         console.log("***** Error section: *****");
