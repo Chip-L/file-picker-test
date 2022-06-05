@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Image, View } from "react-native";
 import ShowCamera from "./app/components/ShowCamera";
 import ShowImagePicker from "./app/components/ShowImagePicker";
+import ShowTestText from "./app/components/ShowTestText";
 import UploadImage from "./app/components/UploadImage";
 
 export default function App() {
@@ -9,6 +10,7 @@ export default function App() {
   const [takenImagePath, setTakenImagePath] = useState<string | null>(null);
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <ShowTestText />
       <ShowImagePicker setPickedImagePath={setPickedImagePath} />
       {pickedImagePath && (
         <Image
