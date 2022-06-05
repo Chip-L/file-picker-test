@@ -36,7 +36,7 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
       console.log("***** back to Upload Image");
 
       const formData = new FormData();
-      formData.append("file", "Image Upload");
+      // formData.append("file", "Image Upload");
       formData.append("image", fileToUpload);
 
       console.log("formData:");

@@ -26,7 +26,8 @@ exports.uploadSingleNoMW = (req, res, next) => {
 exports.saveFields = (req, res) => {
   console.log("**** uploadFields controller ****");
   let msg;
-  const files = req.files.image;
+  const files = req.files.image ?? [];
+  console.log(files.length);
 
   if (files.length > 0) {
     for (let i = 0; i < files.length; i++) {
