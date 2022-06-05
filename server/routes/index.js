@@ -6,6 +6,7 @@ const apiRoutes = require("./api");
 // setup routes
 router.use("/api", apiRoutes);
 router.get("/", (req, res) => {
+  console.log("network test request");
   res.send({ success: "success" });
 });
 // export router
