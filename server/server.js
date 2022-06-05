@@ -1,5 +1,5 @@
 const express = require("express");
-const { errorHandler } = require("./controllers/imageControllers");
+const { errorHandler } = require("./controllers/errorHandler");
 
 const routes = require("./routes");
 
