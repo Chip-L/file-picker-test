@@ -39,7 +39,9 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
       formData.append("file", "Image Upload");
       formData.append("image", fileToUpload);
 
-      console.log("formData:", "done");
+      console.log("formData:");
+      console.log(formData);
+      console.log("done");
 
       // create the header options
       const options: RequestInit = {
@@ -53,21 +55,23 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
       console.log("options:", "done");
       let res;
       try {
+        console.log("***** Fetch section *****");
         res = await fetch(URL, options);
         const body = (await res.json()) as any;
 
+        console.log("res.ok:", res.ok);
         if (!res.ok) {
           throw new Error("Something went wrong");
         }
 
-        console.log("Success section:");
+        console.log("***** Success section *****");
         if (body.code > 200) {
           console.log("setErrMsg", body.msg);
         } else {
           console.log("setStatusMsg", body.msg);
         }
       } catch (err) {
-        console.log("Error section:", res);
+        console.log("***** Error section: *****");
         console.log("setErrMsg\nThere was an error in upload");
         console.log("upload catch error:");
         console.log(err);
