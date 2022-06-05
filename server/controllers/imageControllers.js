@@ -135,3 +135,8 @@ exports.uploadMultiNoMW = (req, res, next) => {
     res.json({ msg: "Your image has been updated!", code: 200 });
   });
 };
+
+exports.log = (req, res, next) => {
+  console.log("Request URL:", req.originalUrl);
+  next();
+};

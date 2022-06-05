@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Text } from "react-native";
+import { Button } from "react-native";
 
 function ShowTestText() {
   const [message, setMessage] = useState("");
@@ -26,7 +26,7 @@ function ShowTestText() {
     getText();
   }, []);
 
-  return <Text>{message}</Text>;
+  return <Button onPress={getText} title={message} />;
 }
 
 export default ShowTestText;
