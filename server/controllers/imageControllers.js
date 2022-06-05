@@ -1,5 +1,5 @@
 const multer = require("multer");
-const { storage, fileFilter, limits } = require("../config/multerConfig");
+const { storage, fileFilter, limits } = require("../config/multerConfigDisk");
 
 // MulterError body:
 // code: "LIMIT_FILE_SIZE";
