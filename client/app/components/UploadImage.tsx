@@ -57,9 +57,9 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
       try {
         console.log("***** Fetch section *****");
         res = await fetch(URL, options);
+        console.log("res.ok:", res.ok);
         const body = (await res.json()) as any;
 
-        console.log("res.ok:", res.ok);
         if (!res.ok) {
           throw new Error("Something went wrong");
         }

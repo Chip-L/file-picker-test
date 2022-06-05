@@ -54,7 +54,7 @@ const validateError = (err, funcName = "") => {
         break;
       case "LIMIT_UNEXPECTED_FILE":
         resJson = {
-          msg: "Only .png, .jpg and .jpeg format allowed!",
+          msg: "Too many files!",
           code: 400,
         };
         break;
@@ -99,7 +99,7 @@ exports.uploadSingleNoMW = (req, res, next) => {
     console.log("passed multer");
     if (err) {
       res.json(validateError(err, "uploadSingleNoMW"));
-      console.log("res: ", res);
+      // console.log("res: ", res);
       res.end();
       return;
     }
@@ -112,13 +112,38 @@ exports.uploadSingleNoMW = (req, res, next) => {
   });
 };
 
-exports.saveFields = (req, res, next) => {
+exports.saveFields = (req, res) => {
   console.log("**** uploadFields controller ****");
-  res.json({ msg: "uploadFields done", code: 200 });
+  let msg;
+  const files = req.files.image;
+
+  if (files.length > 0) {
+    for (let i = 0; i < files.length; i++) {
+      console.log(`req.files.image[${i}]:\n`, files[i]);
+    }
+    msg = "uploadFields done";
+  } else {
+    msg = "no file submitted";
+  }
+
+  res.json({ msg, code: 200 });
 };
 
 exports.log = (req, res, next) => {
-  console.log("**** Log controller ****");
+  console.log("\n**** Log controller ****");
   console.log("Request URL:", req.originalUrl);
   next();
+};
+
+exports.errorHandler = (err, req, res, next) => {
+  if (err) {
+    console.log("err:", err);
+    errObj = validateError(err, "saveFields");
+    console.log("error:", errObj);
+    res.status(500);
+    res.json(errObj);
+    return;
+
+    // res.render('error', { error: err })
+  }
 };
