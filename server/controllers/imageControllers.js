@@ -64,6 +64,11 @@ const validateError = (err, funcName = "") => {
           code: 400,
         };
         break;
+      default:
+        resJson = {
+          msg: "unknown error",
+          code: 400,
+        };
     }
   } else if (err) {
     console.log(
@@ -75,6 +80,7 @@ const validateError = (err, funcName = "") => {
       code: 500,
     };
   }
+  console.log("validateError", resJson);
   return resJson;
 };
 
@@ -100,12 +106,20 @@ exports.uploadSingle = (err, req, res, next) => {
 */
 
 exports.uploadSingleNoMW = (req, res, next) => {
+  console.log("**** uploadSingleNoMW controller ****");
+  console.log("raw req:");
+  console.log(req);
+
+  // configure multer
   const upload = multer({ storage, fileFilter, limits }).single("file");
 
   // This defines the req.file
   upload(req, res, function (err) {
+    console.log("passed multer");
     if (err) {
       res.json(validateError(err, "uploadSingleNoMW"));
+      console.log("res: ", res);
+      res.end();
       return;
     }
 
@@ -129,9 +143,9 @@ exports.uploadMultiNoMW = (req, res, next) => {
     }
 
     // // Everything went fine.
-    // console.log("body:", req.body);
-    // console.log("files:", req.files);
-    // console.log("uploadMultiNoMW: everything is ok");
+    console.log("body:", req.body);
+    console.log("files:", req.files);
+    console.log("uploadMultiNoMW: everything is ok");
     res.json({ msg: "Your image has been updated!", code: 200 });
   });
 };

@@ -1,5 +1,5 @@
-import React from "react";
-import { Button, View } from "react-native";
+import React, { useState } from "react";
+import { Button, Text, View } from "react-native";
 
 interface UploadImageProps {
   type: "picked" | "taken";
@@ -26,6 +26,9 @@ const fetchImageFromUri = async (uri: string) => {
 };
 
 function UploadImage({ type, pathToImage }: UploadImageProps) {
+  const [message, setMessage] = useState("");
+  const [errMessage, setErrMessage] = useState("");
+
   const upload = async () => {
     console.log("***** Upload Image *****");
     if (pathToImage != null) {
@@ -48,21 +51,23 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
       };
 
       console.log("options:", "done");
+      let res;
       try {
-        const res = await fetch(URL, options);
+        res = await fetch(URL, options);
         const body = (await res.json()) as any;
 
         if (!res.ok) {
           throw new Error("Something went wrong");
         }
 
-        console.log("Success section:", res);
+        console.log("Success section:");
         if (body.code > 200) {
           console.log("setErrMsg", body.msg);
         } else {
           console.log("setStatusMsg", body.msg);
         }
       } catch (err) {
+        console.log("Error section:", res);
         console.log("setErrMsg\nThere was an error in upload");
         console.log("upload catch error:");
         console.log(err);
@@ -73,7 +78,13 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
   if (pathToImage === null) {
     return <View />;
   }
-  return <Button title={`Upload ${type} image`} onPress={upload} />;
+  return (
+    <>
+      <Button title={`Upload ${type} image`} onPress={upload} />
+      <Text>{message}</Text>
+      <Text style={{ color: "red" }}>{errMessage}</Text>
+    </>
+  );
 }
 
 export default UploadImage;
