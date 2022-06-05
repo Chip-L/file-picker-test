@@ -110,7 +110,7 @@ exports.uploadSingleNoMW = (req, res, next) => {
   console.log("raw req.body:");
   console.log(req.body);
   res.json({ msg: "upload" });
-
+  /*
   // configure multer
   const upload = multer({ storage, fileFilter, limits }).single("image");
 
@@ -129,7 +129,7 @@ exports.uploadSingleNoMW = (req, res, next) => {
     console.log("file:", req.file);
     console.log("uploadSingleNoMW: everything is ok");
     res.json({ msg: "Your image has been updated!", code: 200 });
-  });
+  });*/
 };
 
 /*
