@@ -112,6 +112,11 @@ exports.uploadSingleNoMW = (req, res, next) => {
   });
 };
 
+exports.saveFields = (req, res, next) => {
+  console.log("**** uploadFields controller ****");
+  res.json({ msg: "uploadFields done", code: 200 });
+};
+
 exports.log = (req, res, next) => {
   console.log("**** Log controller ****");
   console.log("Request URL:", req.originalUrl);
