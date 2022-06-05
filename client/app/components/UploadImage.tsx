@@ -6,7 +6,7 @@ interface UploadImageProps {
   pathToImage: string | null;
 }
 
-const HOST = "https://file-picker-test.herokuapp.com/";
+const HOST = "https://file-picker-test.herokuapp.com";
 const URL = HOST + "/api/add-image-no-mw";
 
 const fetchImageFromUri = async (uri: string) => {
@@ -49,7 +49,7 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
         },
         body: formData,
       };
-
+      console.log("URL:", URL);
       console.log("options:", "done");
       let res;
       try {

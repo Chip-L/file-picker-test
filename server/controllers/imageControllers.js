@@ -107,11 +107,11 @@ exports.uploadSingle = (err, req, res, next) => {
 
 exports.uploadSingleNoMW = (req, res, next) => {
   console.log("**** uploadSingleNoMW controller ****");
-  console.log("raw req:");
-  console.log(req);
+  console.log("raw req.body:");
+  console.log(req.body);
 
   // configure multer
-  const upload = multer({ storage, fileFilter, limits }).single("file");
+  const upload = multer({ storage, fileFilter, limits }).single("image");
 
   // This defines the req.file
   upload(req, res, function (err) {
@@ -151,6 +151,7 @@ exports.uploadMultiNoMW = (req, res, next) => {
 };
 
 exports.log = (req, res, next) => {
+  console.log("**** Log controller ****");
   console.log("Request URL:", req.originalUrl);
   next();
 };
