@@ -12,9 +12,6 @@ exports.uploadSingleNoMW = (req, res, next) => {
     console.log("passed multer");
     if (err) {
       console.log("multer error");
-      // res.json(validateError(err, "uploadSingleNoMW"));
-      // // console.log("res: ", res);
-      // res.end();
       return next(err);
     }
 

@@ -1,12 +1,12 @@
 const multer = require("multer");
 
 exports.errorHandler = (err, req, res, next) => {
-  console.log("\n**** errorHandler controller ****");
+  console.log("**** errorHandler controller ****");
   if (err) {
     // console.log("err:", err);
     errObj = validateError(err, req.path);
     console.log("error:", errObj);
-    res.status(500);
+    res.status(errObj.code);
     res.json(errObj);
     return;
   }
