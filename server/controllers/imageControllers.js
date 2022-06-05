@@ -89,8 +89,8 @@ exports.uploadSingleNoMW = (req, res, next) => {
   console.log("raw req.body:");
   console.log(req.body);
 
-  res.json({ msg: "upload" });
-  return;
+  // res.json({ msg: "upload" });
+  // return;
   // configure multer
   const upload = multer({ storage, fileFilter, limits }).single("image");
 
