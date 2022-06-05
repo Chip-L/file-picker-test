@@ -84,33 +84,12 @@ const validateError = (err, funcName = "") => {
   return resJson;
 };
 
-/* 
-This code does not actually work. If I take out the "err", it works fine for valid files, but it doesn't catch the error message for the invalid files. If I leave "err" in, the upload middleware never passes over to here and the code never executes for valid files. 
-
-As per https://www.npmjs.com/package/multer#error-handling, we shouldn't be doing this with middleware and we need to include it in the function.
-
-exports.uploadSingle = (err, req, res, next) => {
-  console.log("uploadSingle reached:");
-  console.log("\tfile:", req.file);
-  console.log("\terr:", err);
-
-  // check for bad type
-  if (err) {
-    res.json(validateError(err, "uploadSingle"));
-    return;
-  }
-
-  console.log("uploadSingle: Your image has been updated!");
-  res.json({ msg: "Your image has been updated!", code: 200 });
-};
-*/
-
 exports.uploadSingleNoMW = (req, res, next) => {
   console.log("**** uploadSingleNoMW controller ****");
   console.log("raw req.body:");
   console.log(req.body);
   res.json({ msg: "upload" });
-  /*
+
   // configure multer
   const upload = multer({ storage, fileFilter, limits }).single("image");
 
@@ -129,27 +108,6 @@ exports.uploadSingleNoMW = (req, res, next) => {
     console.log("file:", req.file);
     console.log("uploadSingleNoMW: everything is ok");
     res.json({ msg: "Your image has been updated!", code: 200 });
-  });*/
-};
-
-/*
-// Note: if 1 file is bad, all files are rejected.
-exports.uploadMultiNoMW = (req, res, next) => {
-  const upload = multer({ storage, fileFilter, limits }).array("files");
-
-  
-  // This defines the req.file
-  upload(req, res, function (err) {
-    if (err) {
-      res.json(validateError(err, "uploadMultiNoMW"));
-      return;
-    }
-
-    // // Everything went fine.
-    console.log("body:", req.body);
-    console.log("files:", req.files);
-    console.log("uploadMultiNoMW: everything is ok");
-    res.json({ msg: "Your image has been updated!", code: 200 });
   });
 };
 
@@ -158,4 +116,3 @@ exports.log = (req, res, next) => {
   console.log("Request URL:", req.originalUrl);
   next();
 };
-*/
