@@ -6,7 +6,7 @@ interface UploadImageProps {
   pathToImage: string | null;
 }
 
-const HOST = "http://192.168.1.32:8000";
+const HOST = "https://file-picker-test.herokuapp.com/";
 const URL = HOST + "/api/add-image-no-mw";
 
 const fetchImageFromUri = async (uri: string) => {
