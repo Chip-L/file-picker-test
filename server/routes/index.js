@@ -10,7 +10,7 @@ router.post("/post", (req, res, next) => {
   try {
     res.statusCode = 200;
     res.json({
-      data: `post test done on ${req.body.date} at ${req.body.time}`,
+      success: `post test done on ${req.body.date} at ${req.body.time}`,
     });
   } catch (err) {
     return next(err);
@@ -18,7 +18,7 @@ router.post("/post", (req, res, next) => {
 });
 router.get("/", (req, res) => {
   console.log("network test request");
-  res.send({ success: "success" });
+  res.json({ success: "success" });
 });
 // export router
 module.exports = router;

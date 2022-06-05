@@ -10,7 +10,8 @@ export default function App() {
   const [takenImagePath, setTakenImagePath] = useState<string | null>(null);
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <ShowTestText />
+      <ShowTestText type="Get" />
+      <ShowTestText type="Post" />
       <ShowImagePicker setPickedImagePath={setPickedImagePath} />
       {pickedImagePath && (
         <Image

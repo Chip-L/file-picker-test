@@ -1,13 +1,42 @@
 import { useEffect, useState } from "react";
-import { Button } from "react-native";
+import { Button, Text, View } from "react-native";
 
-function ShowTestText() {
+interface ShowTestTextProps {
+  type: "Get" | "Post";
+}
+
+function ShowTestText({ type }: ShowTestTextProps) {
   const [message, setMessage] = useState("");
 
   const getText = async () => {
+    let url: string, options: RequestInit;
+
+    if (type === "Get") {
+      url = "https://file-picker-test.herokuapp.com/";
+      options = {
+        method: "GET",
+      };
+    } else {
+      const curTime = new Date();
+      url = "https://file-picker-test.herokuapp.com/post";
+      options = {
+        method: "POST",
+        body: JSON.stringify({
+          date: curTime.toDateString(),
+          time: curTime.toLocaleTimeString(),
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      };
+    }
+
     try {
-      const response = await fetch("https://file-picker-test.herokuapp.com/");
+      const response = await fetch(url, options);
       const data = await response.json();
+      console.log(type);
+      console.log(data);
 
       if (data.success) {
         setMessage("Success");
@@ -22,11 +51,20 @@ function ShowTestText() {
   };
 
   useEffect(() => {
-    console.log("Network test ...");
+    console.log("Network " + type + " test ...");
     getText();
   }, []);
 
-  return <Button onPress={getText} title={message} />;
+  const getTitle = () => {
+    return `Test ${type}`;
+  };
+
+  return (
+    <View>
+      <Button onPress={getText} title={getTitle()} />
+      {message !== "" && <Text>{message}</Text>}
+    </View>
+  );
 }
 
 export default ShowTestText;
