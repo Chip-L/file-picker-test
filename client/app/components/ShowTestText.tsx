@@ -27,8 +27,7 @@ function ShowTestText({ type }: ShowTestTextProps) {
         method: "POST",
         body: formData,
         headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
+          "Content-Type": "multipart/form-data",
         },
       };
     }
