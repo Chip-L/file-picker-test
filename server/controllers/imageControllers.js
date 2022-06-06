@@ -1,6 +1,27 @@
 const multer = require("multer");
 const { storage, fileFilter, limits } = require("../config/multerConfigDisk");
 
+exports.saveFields = (req, res) => {
+  console.log("**** uploadFields controller ****");
+  let msg;
+  const files = req.files.image ?? [];
+
+  console.log(files.length);
+  console.log("req.body.action:", req.body.action);
+
+  if (files.length > 0) {
+    for (let i = 0; i < files.length; i++) {
+      console.log(`req.files.image[${i}]:\n`, files[i]);
+    }
+    msg = "uploadFields done";
+  } else {
+    msg = "no file submitted";
+  }
+
+  msg += "\nBut action was '" + req.body.action + "'";
+  res.json({ msg, code: 200 });
+};
+
 exports.uploadSingleNoMW = (req, res, next) => {
   console.log("**** uploadSingleNoMW controller ****");
 
@@ -21,22 +42,4 @@ exports.uploadSingleNoMW = (req, res, next) => {
     console.log("uploadSingleNoMW: everything is ok");
     res.json({ msg: "Your image has been updated!", code: 200 });
   });
-};
-
-exports.saveFields = (req, res) => {
-  console.log("**** uploadFields controller ****");
-  let msg;
-  const files = req.files.image ?? [];
-  console.log(files.length);
-
-  if (files.length > 0) {
-    for (let i = 0; i < files.length; i++) {
-      console.log(`req.files.image[${i}]:\n`, files[i]);
-    }
-    msg = "uploadFields done";
-  } else {
-    msg = "no file submitted";
-  }
-
-  res.json({ msg, code: 200 });
 };
