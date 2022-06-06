@@ -18,13 +18,14 @@ function ShowTestText({ type }: ShowTestTextProps) {
       };
     } else {
       const curTime = new Date();
+      const formData = new FormData();
+      formData.append("date", curTime.toDateString());
+      formData.append("time", curTime.toLocaleTimeString());
+
       url = "https://file-picker-test.herokuapp.com/post";
       options = {
         method: "POST",
-        body: JSON.stringify({
-          date: curTime.toDateString(),
-          time: curTime.toLocaleTimeString(),
-        }),
+        body: formData,
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
@@ -39,7 +40,7 @@ function ShowTestText({ type }: ShowTestTextProps) {
       console.log(data);
 
       if (data.success) {
-        setMessage("Success");
+        setMessage(data.success);
         console.log("Success");
       } else {
         setMessage("Failed");
