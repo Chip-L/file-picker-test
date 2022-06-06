@@ -20,6 +20,7 @@ exports.saveFields = (req, res) => {
 
   msg += "\nBut action was '" + req.body.action + "'";
   res.json({ msg, code: 200 });
+  console.log("response sent:", JSON.stringify({ msg, code: 200 }));
 };
 
 exports.uploadSingleNoMW = (req, res, next) => {

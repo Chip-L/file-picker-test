@@ -30,13 +30,16 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
   const [errMessage, setErrMessage] = useState("");
 
   const upload = async () => {
-    console.log("***** Upload Image *****");
+    console.log("\n***** Upload Image *****");
+    setMessage("");
+    setErrMessage("");
+
     if (pathToImage != null) {
       const fileToUpload = await fetchImageFromUri(pathToImage);
       console.log("***** back to Upload Image");
 
       const formData = new FormData();
-      // formData.append("file", "Image Upload");
+      formData.append("action", "Image Upload");
       formData.append("image", fileToUpload);
 
       console.log("formData:");
@@ -46,10 +49,10 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
       // create the header options
       const options: RequestInit = {
         method: "POST",
-        headers: {
-          Accept: "multipart/form-data",
-        },
         body: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       };
       console.log("URL:", URL);
       console.log("options:", "done");
@@ -57,7 +60,7 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
       try {
         console.log("***** Fetch section *****");
         res = await fetch(URL, options);
-        console.log("res.ok:", res.ok);
+        console.log("fetch returned");
         const body = (await res.json()) as any;
 
         if (!res.ok) {
@@ -72,11 +75,10 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
           console.log("setStatusMsg", body.msg);
           setMessage(body.msg);
         }
-      } catch (err) {
+      } catch (err: any) {
         console.log("***** Error section: *****");
-        console.log("setErrMsg\nThere was an error in upload");
-        console.log("upload catch error:");
-        console.log(err);
+        setErrMessage("There was an error in upload");
+        console.log("upload catch error:", err.message);
       }
     }
   };
@@ -87,8 +89,8 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
   return (
     <>
       <Button title={`Upload ${type} image`} onPress={upload} />
-      <Text>{message}</Text>
-      <Text style={{ color: "red" }}>{errMessage}</Text>
+      {message != "" && <Text>{message}</Text>}
+      {errMessage != "" && <Text style={{ color: "red" }}>{errMessage}</Text>}
     </>
   );
 }
