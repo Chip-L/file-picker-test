@@ -40,9 +40,3 @@ exports.saveFields = (req, res) => {
 
   res.json({ msg, code: 200 });
 };
-
-exports.log = (req, res, next) => {
-  console.log("\n**** Log controller ****");
-  console.log("Request URL:", req.originalUrl);
-  next();
-};

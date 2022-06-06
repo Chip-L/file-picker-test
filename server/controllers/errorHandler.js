@@ -1,5 +1,11 @@
 const multer = require("multer");
 
+exports.log = (req, res, next) => {
+  console.log("\n**** Log controller ****");
+  console.log("Request URL:", req.originalUrl);
+  next();
+};
+
 exports.errorHandler = (err, req, res, next) => {
   console.log("**** errorHandler controller ****");
   if (err) {

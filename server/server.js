@@ -1,5 +1,5 @@
 const express = require("express");
-const { errorHandler } = require("./controllers/errorHandler");
+const { errorHandler, log } = require("./controllers/errorHandler");
 
 const routes = require("./routes");
 
@@ -13,6 +13,7 @@ app.use(express.static("./public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(log);
 app.use(routes);
 app.use(errorHandler);
 
