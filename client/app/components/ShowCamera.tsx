@@ -16,7 +16,11 @@ function ShowCamera({ setTakenImagePath }: ShowCameraProps) {
       return;
     }
 
-    const result = await ImagePicker.launchCameraAsync();
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      aspect: [4, 3],
+      quality: 1, // this is max quality
+    });
 
     // Explore the result
     console.log(result);
