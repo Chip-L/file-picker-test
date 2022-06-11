@@ -48,7 +48,7 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
 
       const formData = new FormData();
       formData.append("action", "Image Upload");
-      // formData.append("image", fileToUpload, "filename");
+      formData.append("image", fileToUpload, "filename");
 
       // from: https://stackoverflow.com/questions/71198201/react-native-unable-to-upload-file-to-server-network-request-failed
       // most articles say this is the way to upload the file... Typescript give an error because it only wants type 'string | Blob'
@@ -67,7 +67,7 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
       options = await traditionalOptions(formData);
       await traditionalFetch(options);
 
-      options = await uploadAsyncOptions();
+      options = await uploadAsyncOptions(formData);
       await uploadAsyncFetch(pathToImage, options as FileSystemUploadOptions);
     }
   };
@@ -113,14 +113,15 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
     }
   };
 
-  const uploadAsyncOptions = async (formData?: FormData) => {
+  const uploadAsyncOptions = async (formData: FormData) => {
     const options: FileSystemUploadOptions = {
-      httpMethod: "POST",
-      uploadType: FileSystemUploadType.MULTIPART,
       headers: {
         "Content-Type": "multipart/form-data",
         Accept: "image/jpeg, image/png",
       },
+      httpMethod: "POST",
+      uploadType: FileSystemUploadType.MULTIPART,
+      fieldName: "image",
     };
     console.log("traditional options:", JSON.stringify(options));
     return options;
@@ -139,6 +140,7 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
     }
   };
 
+  // component
   if (pathToImage === null) {
     return <View />;
   }
