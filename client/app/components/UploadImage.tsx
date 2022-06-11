@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { Button, Text, View } from "react-native";
 import * as FileSystem from "expo-file-system";
+import {
+  FileSystemUploadOptions,
+  FileSystemUploadType,
+} from "expo-file-system";
 interface UploadImageProps {
   type: "picked" | "taken";
   pathToImage: string | null;
@@ -58,46 +62,80 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
 
       console.log("formData:", JSON.stringify(formData));
 
-      // create the header options
-      const options: RequestInit = {
-        method: "POST",
-        body: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Accept: "image/jpeg, image/png",
-        },
-      };
-      console.log("URL:", URL);
-      console.log("options:", JSON.stringify(options));
+      let options: RequestInit | FileSystemUploadOptions | undefined;
 
-      traditionalFetch(options);
+      options = await traditionalOptions(formData);
+      await traditionalFetch(options);
+
+      options = await uploadAsyncOptions();
+      await uploadAsyncFetch(pathToImage, options as FileSystemUploadOptions);
     }
+  };
 
-    async function traditionalFetch(options: RequestInit) {
-      try {
-        console.log("***** Fetch section *****");
+  const traditionalOptions = async (formData: FormData) => {
+    // create the header options
+    const options: RequestInit = {
+      method: "POST",
+      body: formData,
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Accept: "image/jpeg, image/png",
+      },
+    };
+    console.log("traditional options:", JSON.stringify(options));
+    return options;
+  };
 
-        const res = await fetch(URL, options);
-        console.log("fetch returned");
-        const body = (await res.json()) as any;
+  const traditionalFetch = async (options: RequestInit) => {
+    try {
+      console.log("***** Fetch section *****");
 
-        if (!res.ok) {
-          throw new Error("Something went wrong");
-        }
+      const res = await fetch(URL, options);
+      console.log("fetch returned");
+      const body = (await res.json()) as any;
 
-        console.log("***** Success section *****");
-        if (body.code > 200) {
-          console.log("setErrMsg", body.msg);
-          setErrMessage(body.msg);
-        } else {
-          console.log("setStatusMsg", body.msg);
-          setMessage(body.msg);
-        }
-      } catch (err: any) {
-        console.log("***** Error section: *****");
-        setErrMessage("There was an error in upload");
-        console.log("upload catch error:", err.message);
+      if (!res.ok) {
+        throw new Error("Something went wrong");
       }
+
+      console.log("***** Success section *****");
+      if (body.code > 200) {
+        console.log("setErrMsg", body.msg);
+        setErrMessage(body.msg);
+      } else {
+        console.log("setStatusMsg", body.msg);
+        setMessage(body.msg);
+      }
+    } catch (err: any) {
+      console.log("***** Error section: *****");
+      setErrMessage("There was an error in upload");
+      console.log("upload catch error:", err.message);
+    }
+  };
+
+  const uploadAsyncOptions = async (formData?: FormData) => {
+    const options: FileSystemUploadOptions = {
+      httpMethod: "POST",
+      uploadType: FileSystemUploadType.MULTIPART,
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Accept: "image/jpeg, image/png",
+      },
+    };
+    console.log("traditional options:", JSON.stringify(options));
+    return options;
+  };
+  // https://www.tderflinger.com/en/react-native-audio-recording-flask
+  const uploadAsyncFetch = async (
+    uri: string,
+    options: FileSystemUploadOptions
+  ) => {
+    try {
+      const response = await FileSystem.uploadAsync(URL, uri, options);
+      const body = JSON.parse(response.body);
+      setMessage(body.text);
+    } catch (err) {
+      console.error(err);
     }
   };
 
