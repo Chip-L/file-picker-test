@@ -1,12 +1,26 @@
 const multer = require("multer");
 const { storage, fileFilter, limits } = require("../config/multerConfigDisk");
 
-exports.saveFields = (req, res) => {
+exports.saveFields = (req, res, next) => {
   console.log("**** uploadFields controller ****");
   let msg;
   const files = req.files.image ?? [];
 
-  console.log(files.length);
+  console.log(req.body);
+  const hasError = Boolean(req.body.hasError) || false;
+  const errNumber = parseInt(req.body.errorNumber) || 200;
+
+  console.log(JSON.stringify({ hasError, errNumber }, null, 2));
+  if (hasError) {
+    err = new Error(req.body.errorMessage);
+
+    res.status(errNumber);
+    res.json(err.message);
+    return;
+    //  next(err);
+  }
+
+  console.log("files.length:", files.length);
   console.log("req.body.action:", req.body.action);
 
   if (files.length > 0) {

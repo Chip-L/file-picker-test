@@ -11,27 +11,8 @@ interface UploadImageProps {
 }
 
 const HOST = "https://file-picker-test.herokuapp.com";
-const URL = HOST + "/api/add-image-by-fields";
+const URL = HOST + "/api/add-image-by-fields" + 1;
 // const URL = HOST + "/api/add-image-no-mw";
-
-const fetchImageFromUri = async (uri: string) => {
-  console.log("***** Fetch Image From Uri *****");
-  console.log("image uri:", uri);
-
-  try {
-    const response = await fetch(uri);
-    const blob = await response.blob();
-
-    console.log(JSON.stringify(blob));
-    console.log("Blob.prototype.size:", blob.size);
-    console.log("Blob.prototype.type:", blob.type);
-
-    return blob;
-  } catch (error) {
-    console.log("fetchImageFromUri error:", error);
-    throw new Error("fetchImageFromUri");
-  }
-};
 
 function UploadImage({ type, pathToImage }: UploadImageProps) {
   const [message, setMessage] = useState("");
@@ -43,83 +24,26 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
     setErrMessage("");
 
     if (pathToImage != null) {
-      // const fileToUpload = await fetchImageFromUri(pathToImage);
-      // console.log("***** back to Upload Image");
+      let options: FileSystemUploadOptions | undefined;
 
-      const formData = new FormData();
-      formData.append("action", "Image Upload");
-      // formData.append("image", fileToUpload, "filename");
-
-      // from: https://stackoverflow.com/questions/71198201/react-native-unable-to-upload-file-to-server-network-request-failed
-      // most articles say this is the way to upload the file... Typescript give an error because it only wants type 'string | Blob'
-      // let uriParts = pathToImage.split(".");
-      // let fileType = uriParts[uriParts.length - 1];
-      // formData.append("image", {
-      //   uri: pathToImage,
-      //   name: `photo.${fileType}`,
-      //   type: `image/${fileType}`,
-      // });
-
-      // console.log("formData:", JSON.stringify(formData));
-
-      let options: RequestInit | FileSystemUploadOptions | undefined;
-
-      // options = await traditionalOptions(formData);
-      // await traditionalFetch(options);
-
-      options = await uploadAsyncOptions(formData);
-      await uploadAsyncFetch(pathToImage, options as FileSystemUploadOptions);
+      options = await uploadAsyncOptions();
+      await uploadAsyncFetch(pathToImage, options);
     }
   };
 
-  const traditionalOptions = async (formData: FormData) => {
-    // create the header options
-    const options: RequestInit = {
-      method: "POST",
-      body: formData,
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Accept: "image/jpeg, image/png",
-      },
+  const uploadAsyncOptions = async () => {
+    let otherFields: Record<string, string> = {};
+
+    const errorObj = {
+      hasError: "true",
+      errorNumber: "300",
+      errorMessage: "test error message",
     };
-    console.log("traditional options:", JSON.stringify(options));
-    return options;
-  };
-
-  const traditionalFetch = async (options: RequestInit) => {
-    try {
-      console.log("***** Fetch section *****");
-
-      const res = await fetch(URL, options);
-      console.log("fetch returned");
-      const body = (await res.json()) as any;
-
-      if (!res.ok) {
-        throw new Error("Something went wrong");
-      }
-
-      console.log("***** Success section *****");
-      if (body.code > 200) {
-        console.log("setErrMsg", body.msg);
-        setErrMessage(body.msg);
-      } else {
-        console.log("setStatusMsg", body.msg);
-        setMessage(body.msg);
-      }
-    } catch (err: any) {
-      console.log("***** Error section: *****");
-      setErrMessage("There was an error in upload");
-      console.log("upload catch error:", err.message);
-    }
-  };
-
-  const uploadAsyncOptions = async (formData?: FormData) => {
-    console.log("***** uploadAsyncOptions section *****");
-    const otherFields: Record<string, string> = {};
 
     otherFields["action"] = "Image Upload";
+    otherFields = { ...otherFields, ...errorObj };
 
-    console.log("\notherFields:", otherFields);
+    console.log(JSON.stringify(otherFields, null, 2));
 
     const options: FileSystemUploadOptions = {
       headers: {
@@ -131,7 +55,6 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
       fieldName: "image",
       parameters: otherFields,
     };
-    console.log("uploadAsyncOptions options:", JSON.stringify(options));
     return options;
   };
 
@@ -143,9 +66,20 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
     console.log("***** uploadAsyncFetch section *****");
     try {
       const response = await FileSystem.uploadAsync(URL, uri, options);
+      console.log(`status: ${response.status}
+headers:
+ ${JSON.stringify(response.headers, null, 2)}
+ body:
+ ${JSON.stringify(response.body.toString(), null, 2)}`);
+      //  ${response.body.toString()}`);
 
-      const body = JSON.parse(response.body);
-      setMessage("uploadAsyncFetch: " + body.msg);
+      if (response.status >= 200 && response.status < 300) {
+        const body = JSON.parse(response.body);
+        setMessage("uploadAsyncFetch: " + body.msg);
+      } else {
+        // const message = response.body.querySelector("pre");
+        console.log("\nmessage:", message);
+      }
     } catch (err) {
       console.error(err);
     }
