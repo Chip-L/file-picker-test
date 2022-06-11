@@ -43,12 +43,12 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
     setErrMessage("");
 
     if (pathToImage != null) {
-      const fileToUpload = await fetchImageFromUri(pathToImage);
-      console.log("***** back to Upload Image");
+      // const fileToUpload = await fetchImageFromUri(pathToImage);
+      // console.log("***** back to Upload Image");
 
       const formData = new FormData();
       formData.append("action", "Image Upload");
-      formData.append("image", fileToUpload, "filename");
+      // formData.append("image", fileToUpload, "filename");
 
       // from: https://stackoverflow.com/questions/71198201/react-native-unable-to-upload-file-to-server-network-request-failed
       // most articles say this is the way to upload the file... Typescript give an error because it only wants type 'string | Blob'
@@ -60,12 +60,12 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
       //   type: `image/${fileType}`,
       // });
 
-      console.log("formData:", JSON.stringify(formData));
+      // console.log("formData:", JSON.stringify(formData));
 
       let options: RequestInit | FileSystemUploadOptions | undefined;
 
-      options = await traditionalOptions(formData);
-      await traditionalFetch(options);
+      // options = await traditionalOptions(formData);
+      // await traditionalFetch(options);
 
       options = await uploadAsyncOptions(formData);
       await uploadAsyncFetch(pathToImage, options as FileSystemUploadOptions);
@@ -113,7 +113,14 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
     }
   };
 
-  const uploadAsyncOptions = async (formData: FormData) => {
+  const uploadAsyncOptions = async (formData?: FormData) => {
+    console.log("***** uploadAsyncOptions section *****");
+    const otherFields: Record<string, string> = {};
+
+    otherFields["action"] = "Image Upload";
+
+    console.log("\notherFields:", otherFields);
+
     const options: FileSystemUploadOptions = {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -122,19 +129,23 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
       httpMethod: "POST",
       uploadType: FileSystemUploadType.MULTIPART,
       fieldName: "image",
+      parameters: otherFields,
     };
-    console.log("traditional options:", JSON.stringify(options));
+    console.log("uploadAsyncOptions options:", JSON.stringify(options));
     return options;
   };
+
   // https://www.tderflinger.com/en/react-native-audio-recording-flask
   const uploadAsyncFetch = async (
     uri: string,
     options: FileSystemUploadOptions
   ) => {
+    console.log("***** uploadAsyncFetch section *****");
     try {
       const response = await FileSystem.uploadAsync(URL, uri, options);
+
       const body = JSON.parse(response.body);
-      setMessage(body.text);
+      setMessage("uploadAsyncFetch: " + body.msg);
     } catch (err) {
       console.error(err);
     }
