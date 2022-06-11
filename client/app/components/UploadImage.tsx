@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Text, View } from "react-native";
-
+import * as FileSystem from "expo-file-system";
 interface UploadImageProps {
   type: "picked" | "taken";
   pathToImage: string | null;
@@ -44,7 +44,7 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
 
       const formData = new FormData();
       formData.append("action", "Image Upload");
-      formData.append("image", fileToUpload, "filename");
+      // formData.append("image", fileToUpload, "filename");
 
       // from: https://stackoverflow.com/questions/71198201/react-native-unable-to-upload-file-to-server-network-request-failed
       // most articles say this is the way to upload the file... Typescript give an error because it only wants type 'string | Blob'
@@ -70,6 +70,10 @@ function UploadImage({ type, pathToImage }: UploadImageProps) {
       console.log("URL:", URL);
       console.log("options:", JSON.stringify(options));
 
+      traditionalFetch(options);
+    }
+
+    async function traditionalFetch(options: RequestInit) {
       try {
         console.log("***** Fetch section *****");
 
