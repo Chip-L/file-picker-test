@@ -1,93 +1,81 @@
 import React, { useState } from "react";
-import { Button, Text, View } from "react-native";
+import { ActivityIndicator, Button, Text, View } from "react-native";
 import * as FileSystem from "expo-file-system";
 import {
   FileSystemUploadOptions,
   FileSystemUploadType,
 } from "expo-file-system";
+
 interface UploadImageProps {
   type: "picked" | "taken";
   pathToImage: string | null;
 }
 
 const HOST = "https://file-picker-test.herokuapp.com";
-const URL = HOST + "/api/add-image-by-fields" + 1;
-// const URL = HOST + "/api/add-image-no-mw";
+const URL = HOST + "/api/add-image-by-fields";
 
 function UploadImage({ type, pathToImage }: UploadImageProps) {
   const [message, setMessage] = useState("");
   const [errMessage, setErrMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const upload = async () => {
     console.log("\n***** Upload Image *****");
     setMessage("");
     setErrMessage("");
+    setLoading(true);
 
-    if (pathToImage != null) {
-      let options: FileSystemUploadOptions | undefined;
+    if (pathToImage) {
+      console.log("***** get other fields section *****");
+      const dataToSend: Record<string, string> = {};
+      dataToSend["action"] = "Image Upload";
 
-      options = await uploadAsyncOptions();
-      await uploadAsyncFetch(pathToImage, options);
-    }
-  };
+      console.log("***** Options section *****");
+      const options: FileSystemUploadOptions = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Accept: "image/jpeg, image/png",
+        },
+        httpMethod: "POST",
+        uploadType: FileSystemUploadType.MULTIPART,
+        fieldName: "image",
+        parameters: dataToSend,
+      };
 
-  const uploadAsyncOptions = async () => {
-    let otherFields: Record<string, string> = {};
+      console.log("***** 'Fetch' section *****");
+      try {
+        const response = await FileSystem.uploadAsync(
+          URL,
+          pathToImage,
+          options
+        );
 
-    const errorObj = {
-      hasError: "true",
-      errorNumber: "300",
-      errorMessage: "test error message",
-    };
+        console.log(`status: ${response.status}
+        header:
+        ${JSON.stringify(response.headers, null, 2)}
+        body:
+        ${response.body}`);
 
-    otherFields["action"] = "Image Upload";
-    otherFields = { ...otherFields, ...errorObj };
-
-    console.log(JSON.stringify(otherFields, null, 2));
-
-    const options: FileSystemUploadOptions = {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Accept: "image/jpeg, image/png",
-      },
-      httpMethod: "POST",
-      uploadType: FileSystemUploadType.MULTIPART,
-      fieldName: "image",
-      parameters: otherFields,
-    };
-    return options;
-  };
-
-  // https://www.tderflinger.com/en/react-native-audio-recording-flask
-  const uploadAsyncFetch = async (
-    uri: string,
-    options: FileSystemUploadOptions
-  ) => {
-    console.log("***** uploadAsyncFetch section *****");
-    try {
-      const response = await FileSystem.uploadAsync(URL, uri, options);
-      console.log(`status: ${response.status}
-headers:
- ${JSON.stringify(response.headers, null, 2)}
- body:
- ${JSON.stringify(response.body.toString(), null, 2)}`);
-      //  ${response.body.toString()}`);
-
-      if (response.status >= 200 && response.status < 300) {
-        const body = JSON.parse(response.body);
-        setMessage("uploadAsyncFetch: " + body.msg);
-      } else {
-        // const message = response.body.querySelector("pre");
-        console.log("\nmessage:", message);
+        setLoading(false);
+        if (response.status >= 200 && response.status < 300) {
+          const body = JSON.parse(response.body);
+          setMessage(body.msg);
+        } else {
+          setErrMessage(`${response.status} Error: ${response.body}`);
+        }
+      } catch (err: any) {
+        console.error(err);
+        setErrMessage(err.message);
       }
-    } catch (err) {
-      console.error(err);
     }
   };
 
   // component
   if (pathToImage === null) {
     return <View />;
+  }
+  if (loading) {
+    return <ActivityIndicator />;
   }
   return (
     <>
